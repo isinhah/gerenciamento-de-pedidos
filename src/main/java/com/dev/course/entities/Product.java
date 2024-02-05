@@ -1,5 +1,6 @@
 package com.dev.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -21,7 +22,10 @@ public class Product implements Serializable {
     @ManyToMany
     @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"),
     inverseJoinColumns = @JoinColumn(name = "category_id")) //Nome da tabela, nome da chave estrangeira da entidade atual, nome da chave estrangeira da outra entidade
-    private Set<Category> categories = new HashSet<>(); //Um produto pode varias categorias, se elas forem diferentes
+    private Set<Category> categories = new HashSet<>(); //Um produto pode ter varias categorias se forem diferentes
+
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product() {}
 
@@ -75,6 +79,18 @@ public class Product implements Serializable {
 
     public Set<Category> getCategories() {
         return categories;
+    }
+
+    @JsonIgnore
+    public Set<Order> getOrders() {
+        Set<Order> set = new HashSet<>();
+
+        //percorrendo a coleção de items: OrderItem que está associado ao Produto
+        for (OrderItem x : items) {
+            set.add(x.getOrder());
+        }
+
+        return set;
     }
 
     @Override
