@@ -18,7 +18,9 @@ public class Product implements Serializable {
     private String description;
     private Double price;
     private String imgUrl;
-    @Transient
+    @ManyToMany
+    @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"),
+    inverseJoinColumns = @JoinColumn(name = "category_id")) //Nome da tabela, nome da chave estrangeira da entidade atual, nome da chave estrangeira da outra entidade
     private Set<Category> categories = new HashSet<>(); //Um produto pode varias categorias, se elas forem diferentes
 
     public Product() {}
